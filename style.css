@@ -29,3 +29,7 @@
     /*Google Fonts( by Shobha)*/
     font-family: 'Tangerine', cursive;
 }
+
+canvas{
+    box-shadow: 1px 1px 1px red;
+}
