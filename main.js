@@ -1,6 +1,11 @@
 
 /*created by prashant shukla */
 
+var wristX = 0;
+var wristY = 0;
+
+var scoreWrist = 0;
+
 var paddle2 =10,paddle1=10;
 
 var paddle1X = 10,paddle1Height = 110;
@@ -26,20 +31,34 @@ function setup(){
   canvas.parent('canvas');
 
   video = createCapture(VIDEO);
-  video.position(800, 850);
+  video.size(700, 600);
+  video.hide();
 
   poseNet = ml5.poseNet(video, modelLoaded);
+  poseNet.on('pose', gotPoses);
 }
 
 function modelLoaded(){
   console.log("Model Loaded!");
 }
 
+function gotPoses(results) {
+  if (results.length > 0) {
+    console.log(results);
+
+    wristX = results[0].pose.rightWrist.x;
+    wristY = results[0].pose.rightWrist.y;
+    console.log("wrist x: " + wristX + "wrist y: " + wristY);
+
+    scoreWrist = results[0].pose.keypoints[10].score;
+    console.log("score wrist: " + scoreWrist);
+  }
+}
 
 function draw(){
-  image(video, 100, 500, 1000, 600);
-
- background(0); 
+ background(0);
+ image(video, 0, 0, 700, 600);
+ 
 
  fill("black");
  stroke("black");
@@ -76,6 +95,14 @@ function draw(){
    
    //function move call which in very important
     move();
+
+    if (scoreWrist > 0.2) {
+      fill('#FF2718');
+      stroke('#FF2718');
+
+      circle(wristX - 15, wristY, 30);
+      console.log("drawn circle");
+    }
 }
 
 
