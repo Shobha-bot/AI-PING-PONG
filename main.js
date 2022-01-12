@@ -26,6 +26,12 @@ var ball = {
     dy:3
 }
 
+function preload() {
+  ball_touch_paddel = loadSound("ball_touch_paddel.wav");
+  missed_paddel = loadSound("missed.wav");
+  gameover = loadSound("gameover.wav");
+}
+
 function setup(){
   var canvas =  createCanvas(700,600);
   canvas.parent('canvas');
@@ -48,7 +54,7 @@ function gotPoses(results) {
 
     wristX = results[0].pose.rightWrist.x;
     wristY = results[0].pose.rightWrist.y;
-    console.log("wrist x: " + wristX + "wrist y: " + wristY);
+    console.log("wrist x: " + wristX + " and wrist y: " + wristY);
 
     scoreWrist = results[0].pose.keypoints[10].score;
     console.log("score wrist: " + scoreWrist);
@@ -75,7 +81,7 @@ function draw(){
    fill(250,0,0);
     stroke(0,0,250);
     strokeWeight(0.5);
-   paddle1Y = mouseY; 
+   paddle1Y = wristY; 
    rect(paddle1X,paddle1Y,paddle1,paddle1Height,100);
    
    
@@ -113,6 +119,7 @@ function reset(){
    ball.y = height/2+100;
    ball.dx=3;
    ball.dy =3;
+   missed_paddel.play();
    
 }
 
@@ -154,7 +161,8 @@ function move(){
    }
   if (ball.x-2.5*ball.r/2< 0){
   if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
-    ball.dx = -ball.dx+0.5; 
+    ball.dx = -ball.dx+0.5;
+    ball_touch_paddel.play(); 
   }
   else{
     pcscore++;
@@ -170,7 +178,8 @@ if(pcscore ==4){
     stroke("white");
     textSize(25)
     text("Game Over!☹☹",width/2,height/2);
-    text("Reload The Page!",width/2,height/2+30)
+    text("Reload The Page!",width/2,height/2+30);
+    gameover.play();
     noLoop();
     pcscore = 0;
 }
